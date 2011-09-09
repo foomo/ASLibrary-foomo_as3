@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.foomo.org" xsi:schemaLocation="http://www.foomo.org http://www.foomo.org/foomo/modules/Foomo.Flash/schemas/project.xsd">
+	<id>org.foomo.as3</id>
+	<group>org.foomo</group>
+	<version>alpha-1.0.1</version>
+	<type>Library Project</type>
+	<name>Foomo common as3 library</name>
+	<description>Foomo common as3 library.</description>
+	<exclude>true</exclude>
+	<dependencies>
+		<id>org.foomo.core</id>
+	</dependencies>
+</config>
