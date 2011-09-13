@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * the foomo Opensource Framework. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.foomo.as3.debug
+package org.foomo.as3.ui
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -22,6 +22,10 @@ package org.foomo.as3.debug
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.utils.getTimer;
+
+	import org.foomo.foomo_internal;
+
+	use namespace foomo_internal;
 
 	/**
 	 * @link    http://www.foomo.org
@@ -32,6 +36,12 @@ package org.foomo.as3.debug
 	 */
 	public class Memory2 extends Sprite
 	{
+		//-----------------------------------------------------------------------------------------
+		// ~ Constants
+		//-----------------------------------------------------------------------------------------
+
+		public static const WIDTH:int = 50;
+
 		//-----------------------------------------------------------------------------------------
 		// ~ Variables
 		//-----------------------------------------------------------------------------------------
@@ -57,31 +67,15 @@ package org.foomo.as3.debug
 		{
 			super();
 
-			var style:TextFormat = new TextFormat();
-			style.color = 0xffffff;
-			style.align = 'right';
-			style.font = 'Myriad Pro';
-			style.leading = 0;
-			style.size = 10;
+			this._upper = Toolbar.getDefaultTextField();
+			this._upper.width = WIDTH;
 
-			this._upper = new TextField();
-			this._upper.width = 50;
-			this._upper.wordWrap = false;
-			this._upper.selectable = false;
-			this._upper.mouseEnabled = false;
-			this._upper.condenseWhite = true;
-			this._upper.defaultTextFormat = style;
-
-			this._lower = new TextField();
+			this._lower = Toolbar.getDefaultTextField();
 			this._lower.y = 10;
-			this._lower.width = 50;
-			this._lower.wordWrap = false;
-			this._lower.selectable = false;
-			this._lower.mouseEnabled = false;
-			this._lower.condenseWhite = true;
-			this._lower.defaultTextFormat = style;
+			this._lower.width = WIDTH;
 
 			this.addEventListener(Event.ADDED_TO_STAGE, this.addedToStageHandler);
+			this.addEventListener(Event.REMOVED_FROM_STAGE, this.removedFromStageHandler);
 		}
 
 		//-----------------------------------------------------------------------------------------
@@ -94,6 +88,14 @@ package org.foomo.as3.debug
 			this.addChild(this._lower);
 
 			this.addEventListener(Event.ENTER_FRAME, this.enterFrameHandler);
+		}
+
+		protected function removedFromStageHandler(event:Event):void
+		{
+			this.removeChild(this._upper);
+			this.removeChild(this._lower);
+
+			this.removeEventListener(Event.ENTER_FRAME, this.enterFrameHandler);
 		}
 
 		protected function enterFrameHandler(event:Event):void

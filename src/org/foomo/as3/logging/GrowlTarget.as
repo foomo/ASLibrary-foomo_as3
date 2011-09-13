@@ -16,7 +16,7 @@
  */
 package org.foomo.as3.logging
 {
-	import org.foomo.as3.debug.Toolbar;
+	import org.foomo.as3.ui.Growl;
 	import org.foomo.logging.ILoggingTarget;
 	import org.foomo.logging.LogLevel;
 
@@ -27,24 +27,21 @@ package org.foomo.as3.logging
 	 * @license http://www.gnu.org/licenses/lgpl.txt
 	 * @author  franklin <franklin@weareinteractive.com>
 	 */
-	public class ToolbarTarget implements ILoggingTarget
+	public class GrowlTarget implements ILoggingTarget
 	{
 		//-----------------------------------------------------------------------------------------
 		// ~ Variables
 		//-----------------------------------------------------------------------------------------
 
-		private var _toolbar:Toolbar;
-
-		private var _level:int;
+		public var logLevel:int;
 
 		//-----------------------------------------------------------------------------------------
 		// ~ Constructor
 		//-----------------------------------------------------------------------------------------
 
-		public function ToolbarTarget(toolbar:Toolbar, level:int=-1)
+		public function GrowlTarget(logLevel:int=-1)
 		{
-			this._toolbar = toolbar;
-			this._level = level;
+			this.logLevel = logLevel;
 		}
 
 		//-----------------------------------------------------------------------------------------
@@ -53,13 +50,13 @@ package org.foomo.as3.logging
 
 		public function format(category:String, message:String, level:int):String
 		{
-			return LogLevel.getLevelString(level) + '\n\n' + message;
+			return message;
 		}
 
 		public function output(message:String, level:int):void
 		{
-			if (this._level == -1 || this._level > level) return;
-			this._toolbar.growl(message);
+			if (this.logLevel == -1 || this.logLevel > level) return;
+			Growl.notify(LogLevel.getLevelString(level), message);
 		}
 	}
 }

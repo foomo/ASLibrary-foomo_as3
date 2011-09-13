@@ -36,6 +36,7 @@ package org.foomo.as3.utlis
 		//-----------------------------------------------------------------------------------------
 
 		private static var _scriptInitialized:Boolean = false;
+		private static var _confirmClosure:Boolean = false;
 
 		//-----------------------------------------------------------------------------------------
 		// ~ Public static methods
@@ -52,6 +53,17 @@ package org.foomo.as3.utlis
 			ExternalInterface.call(BrowserUtil_JavaScript.CODE);
 			ExternalInterface.call("window.foomo.browserUtil.init", uid);
 			_scriptInitialized = true;
+		}
+
+		/**
+		 * @param message to show before closing the window
+		 */
+		public static function confirmClosusure(message:String='Do you really want to leave this page?'):void
+		{
+			if (BrowserUtil._confirmClosure) return;
+			BrowserUtil.init();
+			ExternalInterface.call("window.foomo.browserUtil.confirmMessage", message);
+			BrowserUtil._confirmClosure = true;
 		}
 	}
 }
@@ -97,6 +109,13 @@ class BrowserUtil_JavaScript
 					}
 
 					return null;
+				},
+
+				confirmClosure: function(message)
+				{
+					$(window).bind('beforeunload', function() {
+						return message;
+					});
 				}
 			}
 
