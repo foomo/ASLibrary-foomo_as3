@@ -69,7 +69,7 @@ package org.foomo.as3.ui
 
 			this._message= Toolbar.getDefaultTextField();
 			this._message.defaultTextFormat = format;
-			this._message.y = 15;
+			this._message.y = 12;
 			this._message.text = message;
 			this._message.autoSize = TextFieldAutoSize.LEFT;
 			this._message.width = WIDTH;
