@@ -16,7 +16,7 @@
  */
 package org.foomo.as3.logging
 {
-	import org.foomo.as3.ui.Growl;
+	import org.foomo.as3.ui.Grawl;
 	import org.foomo.logging.ILoggingTarget;
 	import org.foomo.logging.LogLevel;
 
@@ -27,7 +27,7 @@ package org.foomo.as3.logging
 	 * @license http://www.gnu.org/licenses/lgpl.txt
 	 * @author  franklin <franklin@weareinteractive.com>
 	 */
-	public class GrowlTarget implements ILoggingTarget
+	public class GrawlTarget implements ILoggingTarget
 	{
 		//-----------------------------------------------------------------------------------------
 		// ~ Variables
@@ -39,7 +39,7 @@ package org.foomo.as3.logging
 		// ~ Constructor
 		//-----------------------------------------------------------------------------------------
 
-		public function GrowlTarget(logLevel:int=-1)
+		public function GrawlTarget(logLevel:int=-1)
 		{
 			this.logLevel = logLevel;
 		}
@@ -56,7 +56,7 @@ package org.foomo.as3.logging
 		public function output(message:String, level:int):void
 		{
 			if (this.logLevel == -1 || this.logLevel > level) return;
-			Growl.notify(LogLevel.getLevelString(level), message);
+			Grawl.notify(LogLevel.getLevelString(level), message);
 		}
 	}
 }
