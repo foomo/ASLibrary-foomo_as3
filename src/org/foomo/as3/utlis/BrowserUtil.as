@@ -17,7 +17,7 @@
 package org.foomo.as3.utlis
 {
 	import flash.external.ExternalInterface;
-
+	
 	import org.foomo.utils.UIDUtil;
 
 	/**
@@ -37,6 +37,7 @@ package org.foomo.as3.utlis
 
 		private static var _scriptInitialized:Boolean = false;
 		private static var _confirmClosure:Boolean = false;
+		private static var _uid:String;
 
 		//-----------------------------------------------------------------------------------------
 		// ~ Public static methods
@@ -48,10 +49,10 @@ package org.foomo.as3.utlis
 		public static function init():void
 		{
 			if (!ExternalInterface.available || _scriptInitialized) return;
-			var uid:String = UIDUtil.create();
-			ExternalInterface.addCallback(uid, function():void{});
+			_uid = UIDUtil.create();
+			ExternalInterface.addCallback(_uid, function():void{});
 			ExternalInterface.call(BrowserUtil_JavaScript.CODE);
-			ExternalInterface.call("window.foomo.browserUtil.init", uid);
+			ExternalInterface.call("window.foomo.browserUtil.init", _uid);
 			_scriptInitialized = true;
 		}
 
@@ -64,6 +65,20 @@ package org.foomo.as3.utlis
 			BrowserUtil.init();
 			ExternalInterface.call("window.foomo.browserUtil.confirmMessage", message);
 			BrowserUtil._confirmClosure = true;
+		}
+		
+		public static function bind(event:String, callback:Function):void
+		{
+			BrowserUtil.init();
+			var callbackId:String = UIDUtil.create();
+			ExternalInterface.call("window.foomo.browserUtil.bind", _uid, event, callbackId);
+			ExternalInterface.addCallback(callbackId, callback);
+		}
+		
+		public static function trigger(event:String, data:Object=null):void
+		{
+			BrowserUtil.init();
+			ExternalInterface.call("window.foomo.browserUtil.trigger", _uid, event, data);
 		}
 	}
 }
@@ -83,16 +98,16 @@ class BrowserUtil_JavaScript
 			Foomo.BrowserUtil = function() {};
 
 			Foomo.BrowserUtil.prototype = {
-				instance: null,
+				instances: {},
 
 				init: function(id)
 				{
-					this.instance = this.findSwf(id);
+					this.instances[id] = this.findSwf(id);
 				},
 
-				getInstance: function()
+				getInstance: function(id)
 				{
-					return this.instance;
+					return this.instances[id];
 				},
 
 				findSwf: function(id)
@@ -111,16 +126,25 @@ class BrowserUtil_JavaScript
 					return null;
 				},
 
-				confirmClosure: function(message)
+				bind: function(id, event, callback)
 				{
-					$(window).bind('beforeunload', function() {
-						return message;
+					var instance = this.getInstance(id);
+					var $target = $(instance).parent();
+					$target.bind(event, function(event, data) {
+						instance[callback](data);
 					});
+				},
+
+				trigger: function(id, event, data)
+				{
+					var instance = this.getInstance(id)
+					var $target = $(instance).parent();
+					$target.trigger(event, [data]);
 				}
 			}
 
 			window.foomo = {} || window.foomo;
-			window.foomo.browserUtil = new Foomo.BrowserUtil;
+			window.foomo.browserUtil = window.foomo.browserUtil || new Foomo.BrowserUtil;
 		}
 		]]></script>
 	;
